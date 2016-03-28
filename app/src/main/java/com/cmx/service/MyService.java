@@ -13,7 +13,8 @@ public class MyService extends Service {
 
     private final static String TAG = "Johnson-Service";
 
-    private MyBinder mBinder = new MyBinder();
+    //private MyBinder mBinder = new MyBinder();
+    private PersonImpl mBinder = new PersonImpl();
 
     @Override
     public void onCreate() {

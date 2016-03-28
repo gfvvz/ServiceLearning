@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String TAG = "MainActivity";
+
     private Button button1_start_service;
     private Button button2_stop_service;
     private Button button3_intent_service;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button button5_unbind_service;
 
     private MyService.MyBinder myBinder;
+    private IPerson person;
     boolean mBound = false; //一开始，并没有和Service绑定.这个参数是用来显示绑定状态
 
     //匿名内部类：服务连接对象
@@ -30,14 +34,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mBound = false;
         }
 
-        //和服务绑定成功后，服务会回调该方法
+        // 和服务绑定成功后，服务会回调该方法。在这个方法里调用的业务对象中的内容
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (MyService.MyBinder) service;
-            //在Activity中调用Service里面的方法
-            myBinder.startDownload();
-            myBinder.getProgress();
-            mBound = true;
+            Log.d(TAG, "onServiceConnected");
+            person = IPerson.Stub.asInterface(service); // 得到person对象
+            Log.d("person", "person对象的内存地址: " + person); // 打印出person对象的内存地址
+            try {
+                person.setName("东邪");
+                person.setAge(54);
+                person.setSex("男");
+                String p = person.getPerson();
+                Log.d("person", "person的信息: " + p);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            mBound = true; //true说明是绑定状态
+
         }
     };
 
