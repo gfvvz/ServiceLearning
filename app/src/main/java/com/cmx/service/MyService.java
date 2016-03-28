@@ -2,6 +2,7 @@ package com.cmx.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -11,6 +12,8 @@ import android.util.Log;
 public class MyService extends Service {
 
     private final static String TAG = "Johnson-Service";
+
+    private MyBinder mBinder = new MyBinder();
 
     @Override
     public void onCreate() {
@@ -39,6 +42,20 @@ public class MyService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onDestroy");
-        return null;
+        return mBinder;  //在这里返回新建的MyBinder类
+    }
+
+    //MyBinder类，继承Binder：让里面的方法执行下载任务，并获取下载进度
+    class MyBinder extends Binder {
+
+        public void startDownload() {
+            Log.d("TAG", "startDownload() executed");
+            // 执行具体的下载任务
+        }
+        public int getProgress(){
+            Log.d("TAG", "getProgress() executed");
+            return 0;
+        }
+
     }
 }
